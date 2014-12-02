@@ -1,0 +1,15 @@
+#%RAML 0.8
+# example file useful for testing formatting
+
+title: Example RAML API
+baseUri: https://{server.com}/api
+version: 1.2
+documentation:
+  - !include ex-doc-one.yaml
+  - title: more documentation
+    content: |
+      markdown with _formatting_ and
+      bay of pigs.
+traits: !include traits.yaml
+/exResourceful: !include ex-resourceful.yaml
+/another: !include ex-another.yaml

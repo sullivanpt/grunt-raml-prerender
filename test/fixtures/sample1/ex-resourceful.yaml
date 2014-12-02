@@ -1,0 +1,246 @@
+# /exResourceful:
+
+  displayName: a resource can have a display name
+  description: |
+    we like bold descriptions
+    --------------------
+    a resource can have a __description__ too?
+  get:
+    description: |
+      get server config data _and_ important stuff
+    queryParameters:
+      Useful param:
+        displayName: long name of param
+        type: string
+        enum: [cats, dogs]
+        description: |
+          Lengthy description of param
+          ======
+          Shows __something__ useful, but what
+        example: $useful
+        required: false
+      paramSelect:
+        displayName: param2 has a long name too
+        type: integer
+        example: 1234
+        required: true
+      scaleResult:
+        displayName: should results be scaled
+        description: |
+          a useful param that does the following
+
+          * creates animals
+          * creates plants
+        type: boolean
+        default: false
+    responses:
+      200:
+        description: |
+          here is header
+          ==============
+          here are some details about the response
+
+          * including __markdown__ for
+          * extra stuff
+
+          and isn't that great
+      400:
+        description: operation __not__ allowed
+        body:
+          application/json:
+            schema: |
+              {
+                    "$schema": "http://json-schema.org/draft-03/schema",
+                    "properties": {
+                        "input": {
+                            "required": false,
+                            "type": "string"
+                        }
+                    },
+                    "required": false,
+                    "type": "object"
+              }
+  /{resourceId}:
+    displayName: A resource gets a display name
+    uriParameters:
+      resourceId:
+        displayName: The id of the resource to post
+        description: |
+          here is some
+
+          html
+          ====
+
+          stuff
+        type: string
+    post:
+      description: |
+        attention
+        =========
+
+        we can post to this API too
+      is: [paged]
+      queryParameters:
+        Useful param:
+          displayName: long name of param
+          type: string
+          enum: [cats, dogs, pigs, sheep, goats, orangatans, voles, fish, warthogs, snakes]
+          description: Shows __something__ useful, but what
+          default: cats
+          example: $useful
+          required: false
+      body:
+        application/json:
+          schema: |
+            {
+              "$schema": "http://json-schema.org/draft-03/schema",
+              "description": "a long description <b>here we go bold</b> and there",
+              "properties": {
+                  "input": {
+                      "required": false,
+                      "type": "string"
+                  }
+              },
+              "required": false,
+              "type": "object"
+            }
+          example: |
+            {
+              "input": "stuff"
+            }
+        application/xml:
+          schema: |
+            <?xml version="1.0" encoding="UTF-8" ?>
+            <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+              <xs:element name="shiporder">
+               <xs:complexType>
+                 <xs:sequence>
+                   <xs:element name="orderperson" type="xs:string"/>
+                   <xs:element name="shipto">
+                     <xs:complexType>
+                       <xs:sequence>
+                         <xs:element name="name" type="xs:string"/>
+                         <xs:element name="address" type="xs:string"/>
+                         <xs:element name="city" type="xs:string"/>
+                         <xs:element name="country" type="xs:string"/>
+                       </xs:sequence>
+                     </xs:complexType>
+                   </xs:element>
+                   <xs:element name="item" maxOccurs="unbounded">
+                     <xs:complexType>
+                       <xs:sequence>
+                         <xs:element name="title" type="xs:string"/>
+                         <xs:element name="note" type="xs:string" minOccurs="0"/>
+                         <xs:element name="quantity" type="xs:positiveInteger"/>
+                         <xs:element name="price" type="xs:decimal"/>
+                       </xs:sequence>
+                     </xs:complexType>
+                   </xs:element>
+                 </xs:sequence>
+                 <xs:attribute name="orderid" type="xs:string" use="required"/>
+               </xs:complexType>
+              </xs:element>
+            </xs:schema>
+          example: |
+            <?xml version="1.0" encoding="UTF-8"?>
+            <shiporder orderid="889923"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="shiporder.xsd">
+              <orderperson>John Smith</orderperson>
+              <shipto>
+                <name>Ola Nordmann</name>
+                <address>Langgt 23</address>
+                <city>4000 Stavanger</city>
+                <country>Norway</country>
+              </shipto>
+              <item>
+                <title>Empire Burlesque</title>
+                <note>Special Edition</note>
+                <quantity>1</quantity>
+                <price>10.90</price>
+              </item>
+              <item>
+                <title>Hide your heart</title>
+                <quantity>1</quantity>
+                <price>9.90</price>
+              </item>
+            </shiporder>
+      responses:
+        200:
+          description: |
+            A long description goes here.
+          body:
+            application/json:
+              schema: |
+                {
+                  "$schema": "http://json-schema.org/draft-03/schema",
+                  "properties": {
+                      "input": {
+                          "required": false,
+                          "type": "string"
+                      }
+                  },
+                  "required": false,
+                  "type": "object"
+                }
+              example: |
+                {
+                  "input": "stuff"
+                }
+            application/xml:
+              schema: |
+                <?xml version="1.0" encoding="UTF-8" ?>
+                <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <xs:element name="shiporder">
+                   <xs:complexType>
+                     <xs:sequence>
+                       <xs:element name="orderperson" type="xs:string"/>
+                       <xs:element name="shipto">
+                         <xs:complexType>
+                           <xs:sequence>
+                             <xs:element name="name" type="xs:string"/>
+                             <xs:element name="address" type="xs:string"/>
+                             <xs:element name="city" type="xs:string"/>
+                             <xs:element name="country" type="xs:string"/>
+                           </xs:sequence>
+                         </xs:complexType>
+                       </xs:element>
+                       <xs:element name="item" maxOccurs="unbounded">
+                         <xs:complexType>
+                           <xs:sequence>
+                             <xs:element name="title" type="xs:string"/>
+                             <xs:element name="note" type="xs:string" minOccurs="0"/>
+                             <xs:element name="quantity" type="xs:positiveInteger"/>
+                             <xs:element name="price" type="xs:decimal"/>
+                           </xs:sequence>
+                         </xs:complexType>
+                       </xs:element>
+                     </xs:sequence>
+                     <xs:attribute name="orderid" type="xs:string" use="required"/>
+                   </xs:complexType>
+                  </xs:element>
+                </xs:schema>
+              example: |
+                <?xml version="1.0" encoding="UTF-8"?>
+                <shiporder orderid="889923"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:noNamespaceSchemaLocation="shiporder.xsd">
+                  <orderperson>John Smith</orderperson>
+                  <shipto>
+                    <name>Ola Nordmann</name>
+                    <address>Langgt 23</address>
+                    <city>4000 Stavanger</city>
+                    <country>Norway</country>
+                  </shipto>
+                  <item>
+                    <title>Empire Burlesque</title>
+                    <note>Special Edition</note>
+                    <quantity>1</quantity>
+                    <price>10.90</price>
+                  </item>
+                  <item>
+                    <title>Hide your heart</title>
+                    <quantity>1</quantity>
+                    <price>9.90</price>
+                  </item>
+                </shiporder>

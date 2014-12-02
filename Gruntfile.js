@@ -33,18 +33,15 @@ module.exports = function(grunt) {
       default_options: {
         options: {
         },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
-      },
-      custom_options: {
-        options: {
-          separator: ': ',
-          punctuation: ' !!!'
-        },
-        files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
+        files: [
+          {
+            expand: true,     // Enable dynamic expansion.
+            cwd: 'test/fixtures',      // Src matches are relative to this path.
+            src: ['**/*.raml'], // Actual pattern(s) to match.
+            dest: 'tmp/',   // Destination path prefix.
+            ext: '.json'   // Dest filepaths will have this extension.
+          }
+        ]
       }
     },
 

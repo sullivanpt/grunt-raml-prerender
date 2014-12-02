@@ -1,0 +1,22 @@
+# traits:
+
+- paged:
+    usage: Apply this to any method that returns a variable length array
+    description: Here is the description
+    queryParameters:
+      page:
+        displayName: Starting index of results to fetch
+        type: integer
+        default: 0
+        minimum: 0
+      size:
+        displayName: Size of the block to fetch
+        type: integer
+        default: 10
+      includeCount:
+        displayName: Return total result set count
+        description: |
+          boolean which is set to true if total result set count is needed for pagination. Counting the total may
+          cause a slower response, so set this to true if you do not need to know what the total count is.
+        type: boolean
+        default: false

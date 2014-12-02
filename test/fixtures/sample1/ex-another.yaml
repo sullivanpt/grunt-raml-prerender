@@ -1,0 +1,8 @@
+# /another:
+  displayName: get another resource
+  description: a different resource can have a __description__ too?
+  get:
+    description: this is a different resource
+    is: [paged]
+
+
