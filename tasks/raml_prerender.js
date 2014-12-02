@@ -11,11 +11,105 @@
 module.exports = function(grunt) {
   var async = require('async');
   var raml = require('raml-parser');
+  var _ = require('lodash');
+  var Showdown = require('showdown');
+  var pd = require('pretty-data').pd; // npm equivalent of vkiryukhin/vkBeautify
 
+  // appropriate pretty printing
+  function beautify(format, data) {
+    try {
+      if (/xml/.test(format)) {
+        return pd.xml(data);
+      }
+      if (/json/.test(format)) {
+        return pd.json(data);
+      }
+      return data; // unrecognized
+    }
+    catch (err) {
+      return data; // syntax error
+    }
+  }
+
+  // converts markdown, xml, and json to formatted html
+  function formatForDisplay(data) {
+    var converter = new Showdown.converter();
+    (data.documentation || []).forEach(function (doc) {
+      doc.content = converter.makeHtml(doc.content);
+    });
+    (data.resources || []).forEach(function (resource) {
+      resource.description = resource.description && converter.makeHtml(resource.description);
+      _.forOwn(resource.uriParameters || {}, function(paramValue) {
+        if (paramValue) {
+          paramValue.description = paramValue.description && converter.makeHtml(paramValue.description);
+          paramValue.uri = true; // so we can use same template
+        }
+      });
+      (resource.methods || []).forEach(function (method) {
+        method.description = method.description && converter.makeHtml(method.description);
+
+        _.forOwn(method.queryParameters || {}, function(paramValue) {
+          if (paramValue) {
+            paramValue.description = paramValue.description && converter.makeHtml(paramValue.description);
+          }
+        });
+
+        _.forOwn(method.body || {}, function(formatValue, format) {
+          // note: we assume body -> type -> example|schema, but body -> example|schema is also technically valid RAML
+          _.forOwn(formatValue || {}, function(bodyTypeValue, bodyTypeKey) {
+            var schema;
+            if (format === 'application/json' && bodyTypeKey === 'schema') { // special case, unpack an HTML description from the JSON schema
+              schema = JSON.parse(bodyTypeValue);
+              method.bodyDescription = schema.description;
+              delete schema.description; // too much to see this twice
+              bodyTypeValue = JSON.stringify(schema);
+            }
+            formatValue[bodyTypeKey] = beautify(format, bodyTypeValue);
+          });
+        });
+
+        _.forOwn(method.responses || {}, function(response) {
+          if (response) {
+            response.description = response.description && converter.makeHtml(response.description);
+            _.forOwn(response.body || {}, function(formatValue, format) {
+              _.forOwn(formatValue || {}, function(bodyTypeValue, bodyTypeKey) {
+                formatValue[bodyTypeKey] = beautify(format, bodyTypeValue);
+              });
+            });
+          }
+        });
+      });
+    });
+    return data;
+  }
+
+  // convert nested resources to rooted resources
+  function unnest(src, dst, path, uriParameters, description) {
+    (src || []).forEach(function (resource) {
+      delete resource.relativeUriPathSegments; // not using it and it's no longer correct
+      if (description) {
+        resource.description = (resource.description ? (resource.description + '<hr>') : '') + description;
+      }
+      if (uriParameters) {
+        resource.uriParameters = _.extend(resource.uriParameters || {}, uriParameters);
+      }
+      resource.relativeUri = path + resource.relativeUri;
+      unnest(resource.resources, dst, resource.relativeUri, resource.uriParameters, resource.description);
+      delete resource.resources;
+      dst.unshift(resource);
+    });
+    return dst;
+  }
+
+  // read, process, and save a single RAML file
   function processOneRamlFile(src, dst, callback) {
 
     grunt.log.debug('Processing "' + src);
     raml.loadFile(src).then( function(data) {
+
+      // pre-process the data before we save it so there is less to do when we want to render it
+      data.resources = unnest(data.resources, [], '');
+      data = formatForDisplay(data);
 
       // Write the destination file.
       grunt.file.write(dst, JSON.stringify(data));
