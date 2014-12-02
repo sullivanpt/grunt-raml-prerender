@@ -9,9 +9,8 @@
 'use strict';
 
 module.exports = function(grunt) {
-  var async = require('async');
   var raml = require('raml-parser');
-  var _ = require('lodash');
+  var _ = grunt.util._;
   var Showdown = require('showdown');
   var pd = require('pretty-data').pd; // npm equivalent of vkiryukhin/vkBeautify
 
@@ -138,7 +137,7 @@ module.exports = function(grunt) {
     var done = this.async();
     var that = this;
 
-    async.eachSeries(this.files, function (f, callback) {
+    grunt.util.async.forEachSeries(this.files, function (f, callback) {
 
       // Concat specified files.
       var src = f.src.filter(function(filepath) {
