@@ -1,0 +1,55 @@
+#%RAML 0.8
+# example file for testing YAML schema
+
+title: YAML schema RAML API
+baseUri: https://{server.com}/api
+version: 1.2
+/resource:
+  displayName: a resource can have a display name
+  description: |
+    we like bold descriptions
+    --------------------
+    a resource can have a __description__ too?
+  post:
+    description: |
+      attention
+      =========
+
+      we can post to this API too
+    body:
+      application/json:
+        schema: |
+          $schema: http://json-schema.org/draft-03/schema,
+          description: |
+            bold header
+            ===========
+            a longer description <b>here we go bold</b> and there,
+          properties:
+            input:
+              required: false,
+              type: string
+          required: false,
+          type: object
+        example: |
+          {
+            "input": "stuff"
+          }
+    responses:
+      200:
+        description: |
+          A long description goes here.
+        body:
+          application/json:
+            schema: |
+              $schema: http://json-schema.org/draft-03/schema,
+              description: a long description <b>here we go bold</b> and there,
+              properties:
+                input:
+                  required: false,
+                  type: string
+              required: false,
+              type: object
+            example: |
+              {
+                "input": "stuff"
+              }

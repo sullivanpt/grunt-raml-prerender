@@ -14,6 +14,7 @@ module.exports = function(grunt) {
   var _ = grunt.util._;
   var Showdown = require('showdown');
   var pd = require('pretty-data').pd; // npm equivalent of vkiryukhin/vkBeautify
+  var yaml = require('js-yaml');
 
   // raml schema validation from https://github.com/sullivanpt/grunt-raml-init
   function validateRaml(file, next) {
@@ -97,6 +98,16 @@ module.exports = function(grunt) {
     }
   }
 
+  // parse schema string from JSON or YAML
+  function parseJsonSchema(schema) {
+    // we use the presence of the double quoted string to differentiate JSON from YAML
+    if (schema.indexOf('"$schema"') !== -1) {
+      return JSON.parse(schema);
+    } else {
+      return yaml.safeLoad(schema);
+    }
+  }
+
   // converts markdown, xml, and json to formatted html
   function formatForDisplay(data) {
     var converter = new Showdown.converter();
@@ -124,9 +135,9 @@ module.exports = function(grunt) {
           // note: we assume body -> type -> example|schema, but body -> example|schema is also technically valid RAML
           _.forOwn(formatValue || {}, function(bodyTypeValue, bodyTypeKey) {
             var schema;
-            if (format === 'application/json' && bodyTypeKey === 'schema') { // special case, unpack an HTML description from the JSON schema
-              schema = JSON.parse(bodyTypeValue);
-              method.bodyDescription = schema.description;
+            if (format === 'application/json' && bodyTypeKey === 'schema') { // support YAML schema and unpack an HTML description from the JSON schema
+              schema = parseJsonSchema(bodyTypeValue);
+              method.bodyDescription = schema.description && converter.makeHtml(schema.description); // markdown for description
               delete schema.description; // too much to see this twice
               bodyTypeValue = JSON.stringify(schema);
             }
@@ -139,6 +150,11 @@ module.exports = function(grunt) {
             response.description = response.description && converter.makeHtml(response.description);
             _.forOwn(response.body || {}, function(formatValue, format) {
               _.forOwn(formatValue || {}, function(bodyTypeValue, bodyTypeKey) {
+                var schema;
+                if (format === 'application/json' && bodyTypeKey === 'schema') { // support YAML schema
+                  schema = parseJsonSchema(bodyTypeValue);
+                  bodyTypeValue = JSON.stringify(schema);
+                }
                 formatValue[bodyTypeKey] = beautify(format, bodyTypeValue);
               });
             });
@@ -172,16 +188,27 @@ module.exports = function(grunt) {
 
     grunt.log.debug('Processing "' + src);
     // TODO: respect options.validate === false
+    /*
     validateRaml(src, function (err) {
       if (err) {
         return callback(err);
       }
+      */
 
       raml.loadFile(src).then( function(data) {
 
+        grunt.log.debug('Loaded "' + src, data);
+
         // pre-process the data before we save it so there is less to do when we want to render it
-        data.resources = unnest(data.resources, [], '');
-        data = formatForDisplay(data);
+        try {
+          data.resources = unnest(data.resources, [], '');
+          data = formatForDisplay(data);
+        }
+        catch (err) {
+          return callback('Error formatting ' + src + ' ' + err);
+        }
+
+        grunt.log.debug('Formatted "' + src, data);
 
         // Write the destination file.
         grunt.file.write(dst, grunt.util.normalizelf(JSON.stringify(data, null, options.prettyPrint)));
@@ -196,7 +223,7 @@ module.exports = function(grunt) {
         callback(error);
       });
 
-    });
+//    });
   }
 
 

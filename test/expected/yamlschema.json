@@ -1,5 +1,5 @@
 {
-  "title": "simple example RAML API",
+  "title": "YAML schema RAML API",
   "baseUri": "https://{server.com}/api",
   "version": "1.2",
   "protocols": [
@@ -15,7 +15,7 @@
           "description": "<h1 id=\"attention\">attention</h1>\n\n<p>we can post to this API too</p>",
           "body": {
             "application/json": {
-              "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema\",\n  \"properties\": {\n    \"input\": {\n      \"required\": false,\n      \"type\": \"string\"\n    }\n  },\n  \"required\": false,\n  \"type\": \"object\"\n}",
+              "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema,\",\n  \"properties\": {\n    \"input\": {\n      \"required\": \"false,\",\n      \"type\": \"string\"\n    }\n  },\n  \"required\": \"false,\",\n  \"type\": \"object\"\n}",
               "example": "{\n  \"input\": \"stuff\"\n}"
             }
           },
@@ -24,7 +24,7 @@
               "description": "<p>A long description goes here.</p>",
               "body": {
                 "application/json": {
-                  "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema\",\n  \"id\": \"simple\",\n  \"properties\": {\n    \"input\": {\n      \"required\": false,\n      \"type\": \"string\"\n    }\n  },\n  \"required\": false,\n  \"type\": \"object\"\n}",
+                  "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema,\",\n  \"description\": \"a long description <b>here we go bold</b> and there,\",\n  \"properties\": {\n    \"input\": {\n      \"required\": \"false,\",\n      \"type\": \"string\"\n    }\n  },\n  \"required\": \"false,\",\n  \"type\": \"object\"\n}",
                   "example": "{\n  \"input\": \"stuff\"\n}"
                 }
               }
@@ -34,7 +34,7 @@
             "HTTPS"
           ],
           "method": "post",
-          "bodyDescription": "<p>a long description <b>here we go bold</b> and there</p>"
+          "bodyDescription": "<h1 id=\"boldheader\">bold header</h1>\n\n<p>a longer description <b>here we go bold</b> and there,</p>"
         }
       ]
     }
