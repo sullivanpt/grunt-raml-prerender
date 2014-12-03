@@ -30,6 +30,7 @@ exports.ramlprerender = {
   default_options: function(test) {
     test.expect(1);
 
+    // note: these tests are flawed because they test string equality not object equality
     var actual = grunt.file.read('tmp/sample1/ex-section.json');
     var expected = grunt.util.normalizelf(grunt.file.read('test/expected/ex-section.json'));
     test.equal(actual, expected, 'should describe what the default behavior is.');

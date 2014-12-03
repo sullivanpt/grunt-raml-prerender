@@ -188,12 +188,10 @@ module.exports = function(grunt) {
 
     grunt.log.debug('Processing "' + src);
     // TODO: respect options.validate === false
-    /*
     validateRaml(src, function (err) {
       if (err) {
         return callback(err);
       }
-      */
 
       raml.loadFile(src).then( function(data) {
 
@@ -223,7 +221,7 @@ module.exports = function(grunt) {
         callback(error);
       });
 
-//    });
+    });
   }
 
 
