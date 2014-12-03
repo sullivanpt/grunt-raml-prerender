@@ -9,10 +9,77 @@
 'use strict';
 
 module.exports = function(grunt) {
+  var raml4js = require('raml4js');
   var raml = require('raml-parser');
   var _ = grunt.util._;
   var Showdown = require('showdown');
   var pd = require('pretty-data').pd; // npm equivalent of vkiryukhin/vkBeautify
+
+  // raml schema validation from https://github.com/sullivanpt/grunt-raml-init
+  function validateRaml(file, next) {
+    raml4js(file, function(err, data) {
+      if (err) {
+        return next(err);
+      }
+
+      try {
+        raml4js.validate({
+          data: data
+          // schemas: schemas // TODO: maybe support these additional schemas if needed
+        }, function(type, obj) {
+          switch (type) {
+          case 'root':
+            grunt.log.subhead('Validating schemas for ' + obj.title + ' ' + obj.version);
+            break;
+
+          case 'label':
+            grunt.log.subhead(obj.description);
+            break;
+
+          case 'error':
+            grunt.fatal(obj.message);
+            break;
+
+          case 'success':
+            grunt.log.ok('OK');
+            break;
+
+          case 'warning':
+            grunt.log.warn('ERROR');
+            grunt.log.writeln(JSON.stringify(obj.schema, null, 2));
+            break;
+
+          case 'missing':
+            grunt.log.error('missing schema for ' + obj);
+            break;
+
+          case 'resource':
+            grunt.log.writeln(obj.method, obj.path);
+            break;
+          }
+        }, function (err) {
+          if (!err) {
+            return next();
+          }
+          // ignore these errors. the raml4js module is too aggressive
+          if (err.toString().indexOf('Error: no responses given ') === 0 ||
+            err.toString().indexOf('Error: missing response ') === 0 ||
+            err.toString().indexOf('Error: missing body ') === 0 ||
+            err.toString().indexOf('Error: missing schema ') === 0 ||
+            err.toString().indexOf('Error: missing example ') === 0 ||
+            err.toString().indexOf('Error: invalid JSON ') === 0) {
+            grunt.log.writeln(err);
+            next();
+          } else {
+            next(err);
+          }
+        });
+      } catch (e) {
+        next(e);
+      }
+    });
+  }
+
 
   // appropriate pretty printing
   function beautify(format, data) {
@@ -100,29 +167,35 @@ module.exports = function(grunt) {
     return dst;
   }
 
-  // read, process, and save a single RAML file
+  // read, validate, pre-format, and save a single RAML file
   function processOneRamlFile(src, dst, callback) {
 
     grunt.log.debug('Processing "' + src);
-    raml.loadFile(src).then( function(data) {
+    validateRaml(src, function (err) {
+      if (err) {
+        return callback(err);
+      }
 
-      // pre-process the data before we save it so there is less to do when we want to render it
-      data.resources = unnest(data.resources, [], '');
-      data = formatForDisplay(data);
+      raml.loadFile(src).then( function(data) {
 
-      // Write the destination file.
-      grunt.file.write(dst, JSON.stringify(data));
+        // pre-process the data before we save it so there is less to do when we want to render it
+        data.resources = unnest(data.resources, [], '');
+        data = formatForDisplay(data);
 
-      // Print a success message.
-      grunt.log.debug('File "' + dst + '" created.');
+        // Write the destination file.
+        grunt.file.write(dst, JSON.stringify(data));
 
-      // do the next file
-      callback();
+        // Print a success message.
+        grunt.log.debug('File "' + dst + '" created.');
 
-    }, function(error) {
-      callback(error);
+        // do the next file
+        callback();
+
+      }, function(error) {
+        callback(error);
+      });
+
     });
-
   }
 
 

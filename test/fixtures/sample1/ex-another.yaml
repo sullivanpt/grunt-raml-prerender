@@ -4,5 +4,28 @@
   get:
     description: this is a different resource
     is: [paged]
+    responses:
+      200:
+        description: |
+          A long description goes here.
+        body:
+          application/json:
+            schema: |
+              {
+                "$schema": "http://json-schema.org/draft-03/schema",
+                "id": "simple",
+                "properties": {
+                    "input": {
+                        "required": false,
+                        "type": "string"
+                    }
+                },
+                "required": false,
+                "type": "object"
+              }
+            example: |
+              {
+                "input": "stuff"
+              }
 
 
