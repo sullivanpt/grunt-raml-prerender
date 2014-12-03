@@ -17,14 +17,14 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-raml-prerender');
 ```
 
-## The "raml_prerender" task
+## The "ramlprerender" task
 
 ### Overview
-In your project's Gruntfile, add a section named `raml_prerender` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a section named `ramlprerender` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
-  raml_prerender: {
+  ramlprerender: {
     options: {
       // Task-specific options go here.
     },
@@ -37,17 +37,17 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
-Type: `String`
-Default value: `',  '`
+#### options.prettyPrint
+Type: `Number`
+Default value: null
 
-A string value that is used to do something with whatever.
+A numeric value that is used as the indent value when pretty printing the JSON output. If not provided then the output is not pretty printed.
 
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
+#### options.validate
+Type: `Boolean`
+Default value: `true`
 
-A string value that is used to do something else with whatever else.
+If false the extra schema validation is skipped.
 
 ### Usage Examples
 
@@ -56,11 +56,16 @@ In this example, the default options are used to do something with whatever. So 
 
 ```js
 grunt.initConfig({
-  raml_prerender: {
+  ramlprerender: {
     options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+    files: [
+      {
+        expand: true,     // Enable dynamic expansion.
+        src: ['*.raml'], // Actual pattern(s) to match.
+        dest: 'tmp/',   // Destination path prefix.
+        ext: '.json'   // Dest filepaths will have this extension.
+      }
+    ]
   },
 });
 ```
@@ -70,14 +75,19 @@ In this example, custom options are used to do something else with whatever else
 
 ```js
 grunt.initConfig({
-  raml_prerender: {
+  ramlprerender: {
     options: {
-      separator: ': ',
-      punctuation: ' !!!',
+      prettyPrint: 2,
+      validate: false,
     },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+    files: [
+      {
+        expand: true,     // Enable dynamic expansion.
+        src: ['src/**/*.raml'], // Actual pattern(s) to match.
+        dest: 'tmp/',   // Destination path prefix.
+        ext: '.json'   // Dest filepaths will have this extension.
+      }
+    ]
   },
 });
 ```

@@ -37,7 +37,34 @@ module.exports = function(grunt) {
           {
             expand: true,     // Enable dynamic expansion.
             cwd: 'test/fixtures',      // Src matches are relative to this path.
-            src: ['**/*.raml'], // Actual pattern(s) to match.
+            src: ['sample1/*.raml'], // Actual pattern(s) to match.
+            dest: 'tmp/',   // Destination path prefix.
+            ext: '.json'   // Dest filepaths will have this extension.
+          }
+        ]
+      },
+      format_options: {
+        options: {
+          prettyPrint: 2
+        },
+        files: [
+          {
+            expand: true,     // Enable dynamic expansion.
+            cwd: 'test/fixtures',      // Src matches are relative to this path.
+            src: ['simple.raml'], // Actual pattern(s) to match.
+            dest: 'tmp/format_options',   // Destination path prefix.
+            ext: '.json'   // Dest filepaths will have this extension.
+          }
+        ]
+      },
+      csonschema_options: {
+        options: {
+        },
+        files: [
+          {
+            expand: true,     // Enable dynamic expansion.
+            cwd: 'test/fixtures',      // Src matches are relative to this path.
+            src: ['csonschema.raml'], // Actual pattern(s) to match.
             dest: 'tmp/',   // Destination path prefix.
             ext: '.json'   // Dest filepaths will have this extension.
           }

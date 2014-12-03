@@ -168,9 +168,10 @@ module.exports = function(grunt) {
   }
 
   // read, validate, pre-format, and save a single RAML file
-  function processOneRamlFile(src, dst, callback) {
+  function processOneRamlFile(src, dst, options, callback) {
 
     grunt.log.debug('Processing "' + src);
+    // TODO: respect options.validate === false
     validateRaml(src, function (err) {
       if (err) {
         return callback(err);
@@ -183,7 +184,7 @@ module.exports = function(grunt) {
         data = formatForDisplay(data);
 
         // Write the destination file.
-        grunt.file.write(dst, JSON.stringify(data));
+        grunt.file.write(dst, grunt.util.normalizelf(JSON.stringify(data, null, options.prettyPrint)));
 
         // Print a success message.
         grunt.log.debug('File "' + dst + '" created.');
@@ -205,6 +206,14 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('ramlprerender', 'Convert RAML to JSON, validating, normalizing, and converting markdown to HTML.', function() {
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
+      /**
+       * If non null then pretty print output json
+       */
+      prettyPrint: null,
+      /**
+       * When false skip tv4 schema validation
+       */
+      validate: true
     });
     // raml parser uses callbacks so we are an async task
     var done = this.async();
@@ -228,7 +237,7 @@ module.exports = function(grunt) {
       }
 
       // we have a valid filename ready to go
-      processOneRamlFile(src[0], f.dest, callback);
+      processOneRamlFile(src[0], f.dest, options, callback);
 
     }, function (err) {
       if (err) {

@@ -35,5 +35,23 @@ exports.ramlprerender = {
     test.equal(actual, expected, 'should describe what the default behavior is.');
 
     test.done();
+  },
+  format_options: function(test) {
+    test.expect(1);
+
+    var actual = grunt.file.read('tmp/format_options/simple.json');
+    var expected = grunt.file.read('test/expected/format_options.json');
+    test.equal(actual, expected, 'should describe what the default behavior is.');
+
+    test.done();
+  },
+  csonschema_options: function(test) {
+    test.expect(1);
+
+    var actual = grunt.file.read('tmp/csonschema.json');
+    var expected = grunt.file.read('test/expected/csonschema.json');
+    test.equal(actual, expected, 'should describe what the default behavior is.');
+
+    test.done();
   }
 };
