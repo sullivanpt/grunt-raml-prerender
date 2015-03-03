@@ -9,7 +9,6 @@
 'use strict';
 
 module.exports = function(grunt) {
-  var raml4js = require('raml4js');
   var raml = require('raml-parser');
   var _ = grunt.util._;
   var Showdown = require('showdown');
