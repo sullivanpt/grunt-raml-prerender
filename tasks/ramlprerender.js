@@ -18,67 +18,7 @@ module.exports = function(grunt) {
 
   // raml schema validation from https://github.com/sullivanpt/grunt-raml-init
   function validateRaml(file, next) {
-    raml4js(file, function(err, data) {
-      if (err) {
-        return next(err);
-      }
-
-      try {
-        raml4js.validate({
-          data: data
-          // schemas: schemas // TODO: maybe support these additional schemas if needed
-        }, function(type, obj) {
-          switch (type) {
-          case 'root':
-            grunt.log.subhead('Validating schemas for ' + obj.title + ' ' + obj.version);
-            break;
-
-          case 'label':
-            grunt.log.subhead(obj.description);
-            break;
-
-          case 'error':
-            grunt.fatal(obj.message);
-            break;
-
-          case 'success':
-            grunt.log.ok('OK');
-            break;
-
-          case 'warning':
-            grunt.log.warn('ERROR');
-            grunt.log.writeln(JSON.stringify(obj.schema, null, 2));
-            break;
-
-          case 'missing':
-            grunt.log.error('missing schema for ' + obj);
-            break;
-
-          case 'resource':
-            grunt.log.writeln(obj.method, obj.path);
-            break;
-          }
-        }, function (err) {
-          if (!err) {
-            return next();
-          }
-          // ignore these errors. the raml4js module is too aggressive
-          if (err.toString().indexOf('Error: no responses given ') === 0 ||
-            err.toString().indexOf('Error: missing response ') === 0 ||
-            err.toString().indexOf('Error: missing body ') === 0 ||
-            err.toString().indexOf('Error: missing schema ') === 0 ||
-            err.toString().indexOf('Error: missing example ') === 0 ||
-            err.toString().indexOf('Error: invalid JSON ') === 0) {
-            grunt.log.writeln(err);
-            next();
-          } else {
-            next(err);
-          }
-        });
-      } catch (e) {
-        next(e);
-      }
-    });
+    next(); // raml4j is broken
   }
 
 
