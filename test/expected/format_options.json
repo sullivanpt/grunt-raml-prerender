@@ -8,11 +8,11 @@
   "resources": [
     {
       "displayName": "a resource can have a display name",
-      "description": "<h2 id=\"welikebolddescriptions\">we like bold descriptions</h2>\n\n<p>a resource can have a <strong>description</strong> too?</p>",
+      "description": "<h2 id=\"welikebolddescriptions\">we like bold descriptions</h2>\n<p>a resource can have a <strong>description</strong> too?</p>",
       "relativeUri": "/resource",
       "methods": [
         {
-          "description": "<h1 id=\"attention\">attention</h1>\n\n<p>we can post to this API too</p>",
+          "description": "<h1 id=\"attention\">attention</h1>\n<p>we can post to this API too</p>",
           "body": {
             "application/json": {
               "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema\",\n  \"properties\": {\n    \"input\": {\n      \"required\": false,\n      \"type\": \"string\"\n    }\n  },\n  \"required\": false,\n  \"type\": \"object\"\n}",

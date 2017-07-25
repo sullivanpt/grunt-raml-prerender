@@ -11,7 +11,7 @@
 module.exports = function(grunt) {
   var raml = require('raml-parser');
   var _ = grunt.util._;
-  var Showdown = require('showdown');
+  var showdown = require('showdown');
   var pd = require('pretty-data').pd; // npm equivalent of vkiryukhin/vkBeautify
   var yaml = require('js-yaml');
 
@@ -49,7 +49,7 @@ module.exports = function(grunt) {
 
   // converts markdown, xml, and json to formatted html
   function formatForDisplay(data) {
-    var converter = new Showdown.converter();
+    var converter = new showdown.Converter();
     (data.documentation || []).forEach(function (doc) {
       doc.content = converter.makeHtml(doc.content);
     });
