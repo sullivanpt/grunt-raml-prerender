@@ -2,6 +2,9 @@
 
 > Convert RAML to JSON, validating, normalizing, and converting markdown to HTML.
 
+**Note** Uses [raml-1-parser](https://github.com/raml-org/raml-js-parser-2). To use the legacy [raml-parser](https://github.com/raml-org/raml-js-parser) require
+v0.1.x.
+
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
 

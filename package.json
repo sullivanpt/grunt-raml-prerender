@@ -1,7 +1,7 @@
 {
   "name": "grunt-raml-prerender",
   "description": "Convert RAML to JSON, validating, normalizing, and converting markdown to HTML.",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "homepage": "https://github.com/sullivanpt/grunt-raml-prerender",
   "author": {
     "name": "Patrick Sullivan"
@@ -38,7 +38,7 @@
   "dependencies": {
     "js-yaml": "^3.2.3",
     "pretty-data": "^0.40.0",
-    "raml-parser": "^0.8.8",
+    "raml-1-parser": "^1.1.28",
     "showdown": "^1.7.1"
   }
 }

@@ -1,49 +1,57 @@
 {
   "title": "YAML schema RAML API",
-  "baseUri": "https://{server.com}/api",
   "version": "1.2",
+  "baseUri": "https://{server.com}/api",
+  "baseUriParameters": {
+    "server.com": {
+      "name": "server.com",
+      "displayName": "server.com",
+      "type": "string",
+      "required": true,
+      "repeat": false
+    }
+  },
   "protocols": [
     "HTTPS"
   ],
   "resources": [
     {
-      "displayName": "a resource can have a display name",
-      "description": "<h2 id=\"welikebolddescriptions\">we like bold descriptions</h2>\n<p>a resource can have a <strong>description</strong> too?</p>",
       "relativeUri": "/resource",
       "methods": [
         {
-          "description": "<h1 id=\"attention\">attention</h1>\n<p>we can post to this API too</p>",
-          "body": {
-            "application/json": {
-              "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema,\",\n  \"properties\": {\n    \"input\": {\n      \"required\": \"false,\",\n      \"type\": \"string\"\n    }\n  },\n  \"required\": \"false,\",\n  \"type\": \"object\"\n}",
-              "example": "{\n  \"input\": \"stuff\"\n}"
-            }
-          },
           "responses": {
             "200": {
-              "description": "<p>A long description goes here.</p>",
+              "code": "200",
               "body": {
                 "application/json": {
+                  "name": "application/json",
                   "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema,\",\n  \"description\": \"a long description <b>here we go bold</b> and there,\",\n  \"properties\": {\n    \"input\": {\n      \"required\": \"false,\",\n      \"type\": \"string\"\n    }\n  },\n  \"required\": \"false,\",\n  \"type\": \"object\"\n}",
-                  "example": "{\n  \"input\": \"stuff\"\n}"
+                  "example": "{\n  \"input\": \"stuff\"\n}",
+                  "schemaContent": "$schema: http://json-schema.org/draft-03/schema,\ndescription: a long description <b>here we go bold</b> and there,\nproperties:\n  input:\n    required: false,\n    type: string\nrequired: false,\ntype: object\n"
                 }
-              }
+              },
+              "description": "<p>A long description goes here.</p>"
+            }
+          },
+          "body": {
+            "application/json": {
+              "name": "application/json",
+              "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema,\",\n  \"properties\": {\n    \"input\": {\n      \"required\": \"false,\",\n      \"type\": \"string\"\n    }\n  },\n  \"required\": \"false,\",\n  \"type\": \"object\"\n}",
+              "example": "{\n  \"input\": \"stuff\"\n}",
+              "schemaContent": "$schema: http://json-schema.org/draft-03/schema,\ndescription: |\n  bold header\n  ===========\n  a longer description <b>here we go bold</b> and there,\nproperties:\n  input:\n    required: false,\n    type: string\nrequired: false,\ntype: object\n"
             }
           },
           "protocols": [
             "HTTPS"
           ],
+          "description": "<h1 id=\"attention\">attention</h1>\n<p>we can post to this API too</p>",
           "method": "post",
           "bodyDescription": "<h1 id=\"boldheader\">bold header</h1>\n<p>a longer description <b>here we go bold</b> and there,</p>"
         }
-      ]
+      ],
+      "displayName": "a resource can have a display name",
+      "description": "<h2 id=\"welikebolddescriptions\">we like bold descriptions</h2>\n<p>a resource can have a <strong>description</strong> too?</p>",
+      "absoluteUri": "https://{server.com}/api/resource"
     }
-  ],
-  "baseUriParameters": {
-    "server.com": {
-      "type": "string",
-      "required": true,
-      "displayName": "server.com"
-    }
-  }
+  ]
 }

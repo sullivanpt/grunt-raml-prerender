@@ -9,7 +9,7 @@
 'use strict';
 
 module.exports = function(grunt) {
-  var raml = require('raml-parser');
+  var raml = require("raml-1-parser"); // old 0.8 version was var raml = require('raml-parser');
   var _ = grunt.util._;
   var showdown = require('showdown');
   var pd = require('pretty-data').pd; // npm equivalent of vkiryukhin/vkBeautify
@@ -132,9 +132,20 @@ module.exports = function(grunt) {
         return callback(err);
       }
 
-      raml.loadFile(src).then( function(data) {
+      raml.loadApi(src).then( function(data) {
 
         grunt.log.debug('Loaded "' + src, data);
+
+        // show errors
+        data.errors().forEach(function (error) {
+          grunt.log.warn((error.isWarning ? ' Warning ' : ' Error ') + data.RAMLVersion() + ' (' + error.path + ':' + error.range.start.line + ') ' + error.message);
+        });
+
+        // convert to legacy 'raml-parser' format
+        data = data.toJSON({
+          rootNodeDetails: false,
+          serializeMetadata: false
+        });
 
         // pre-process the data before we save it so there is less to do when we want to render it
         try {
