@@ -136,9 +136,15 @@ module.exports = function(grunt) {
 
         grunt.log.debug('Loaded "' + src, data);
 
-        // show errors
+        // stop on first validation error
+        var firstError = data.errors().find(function (error) { return !error.isWarning; });
+        if (firstError && options.validate) {
+          return callback('Error ' + data.RAMLVersion() + ' (' + firstError.path + ':' + firstError.range.start.line + ') ' + firstError.message);
+        }
+
+        // show errors and warnings
         data.errors().forEach(function (error) {
-          grunt.log.warn((error.isWarning ? ' Warning ' : ' Error ') + data.RAMLVersion() + ' (' + error.path + ':' + error.range.start.line + ') ' + error.message);
+          grunt.log.warn((error.isWarning ? 'Warning ' : 'Error ') + data.RAMLVersion() + ' (' + error.path + ':' + error.range.start.line + ') ' + error.message);
         });
 
         // convert to legacy 'raml-parser' format
@@ -217,7 +223,7 @@ module.exports = function(grunt) {
     }, function (err) {
       if (err) {
         grunt.log.error(err);
-        return done(err);
+        return done(false);
       }
       grunt.log.writeln('All done.');
       return done();
