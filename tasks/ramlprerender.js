@@ -14,12 +14,17 @@ module.exports = function(grunt) {
   var showdown = require('showdown');
   var pd = require('pretty-data').pd; // npm equivalent of vkiryukhin/vkBeautify
   var yaml = require('js-yaml');
+  var omitDeep = require('omit-deep');
 
   // raml schema validation from https://github.com/sullivanpt/grunt-raml-init
   function validateRaml(file, next) {
     next(); // raml4j is broken
   }
 
+  // helper to get rid of undesired properties like structuredExample, structuredValue, etc.
+  function omitUndesired (obj) {
+    return omitDeep(obj, ['structuredExample', 'structuredValue']);
+  }
 
   // appropriate pretty printing
   function beautify(format, data) {
@@ -47,60 +52,105 @@ module.exports = function(grunt) {
     }
   }
 
+  // helper to convert types
+  // if format is not null it is used to beautify examples
+  function convertType (type, format, data, converter) {
+    var schema;
+    if (type.typePropertyKind === 'TYPE_EXPRESSION') {
+      // expand global types into each point of usage
+      _.defaults(type, _.cloneDeep(data.types[type.type[0]])); // only support single inheritence
+    }
+    // TODO: consider supporting typePropertyKind 'INPLACE' (JSON in global type)
+    if (type.properties) {
+      convertProperties(type.properties, false, data, converter);
+    }
+    if (_.isArray(type.type)) {
+      type.type = type.type.join(', '); // only support single inheritence, but show more types if present
+    }
+    if (['JSON', 'XML'].includes(type.typePropertyKind) && !type.schema) {
+      type.schema = type.type; // convert inline JSON and XML to RAML08 format
+      delete type.type;
+    }
+    if (type.description) {
+      type.description = converter.makeHtml(type.description);
+    }
+    if (type.examples) {
+      type.examples.forEach(function (example) {
+        example.description = example.description && converter.makeHtml(example.description); // markdown for description
+        example.value = format && beautify(format, example.value) || example.value;
+      });
+    }
+    if (type.example && format) {
+      type.example = beautify(format, type.example);
+    }
+    if (type.schema && format) {
+      if (format === 'application/json') {
+        schema = parseJsonSchema(type.schema);
+        if (schema.description && !type.description) {
+          type.description = schema.description && converter.makeHtml(schema.description); // markdown for description
+          delete schema.description; // too much to see this twice
+        }
+        type.schema = JSON.stringify(schema);
+      }
+      type.schema = beautify(format, type.schema);
+    }
+  }
+
+  // helper to convert type properties
+  function convertProperties (properties, isUri, data, converter) {
+    _.forOwn(properties || {}, function (propertyValue, propertyKey) {
+      if (isUri) {
+        propertyValue.uri = true; // so we can use same template
+      }
+      convertType(propertyValue, null, data, converter);
+    });
+  }
+
+  // helper to convert a request or response body
+  function convertBodyFn (data, converter) {
+    return function (formatValue, format) {
+      // note: we assume body -> type -> example|schema, but body -> example|schema is also technically valid RAML
+      convertType(formatValue, format, data, converter);
+    };
+  }
+
   // converts markdown, xml, and json to formatted html
   function formatForDisplay(data) {
     var converter = new showdown.Converter();
+
+    // convert global types to a map
+    // but don't convertProperties them yet as that will happen when they get pulled in
+    data.types = _.reduce(data.types, function (accumulator, value) {
+      var key = _.keys(value)[0]; // just keep the first one
+      accumulator[key] = value[key];
+      return accumulator;
+    }, {});
+
+    convertProperties(data.baseUriParameters, true, data, converter);
     (data.documentation || []).forEach(function (doc) {
       doc.content = converter.makeHtml(doc.content);
     });
     (data.resources || []).forEach(function (resource) {
       resource.description = resource.description && converter.makeHtml(resource.description);
-      _.forOwn(resource.uriParameters || {}, function(paramValue) {
-        if (paramValue) {
-          paramValue.description = paramValue.description && converter.makeHtml(paramValue.description);
-          paramValue.uri = true; // so we can use same template
-        }
-      });
+      convertProperties(resource.uriParameters, true, data, converter);
       (resource.methods || []).forEach(function (method) {
         method.description = method.description && converter.makeHtml(method.description);
+        convertProperties(method.queryParameters, false, data, converter);
 
-        _.forOwn(method.queryParameters || {}, function(paramValue) {
-          if (paramValue) {
-            paramValue.description = paramValue.description && converter.makeHtml(paramValue.description);
-          }
-        });
-
-        _.forOwn(method.body || {}, function(formatValue, format) {
-          // note: we assume body -> type -> example|schema, but body -> example|schema is also technically valid RAML
-          _.forOwn(formatValue || {}, function(bodyTypeValue, bodyTypeKey) {
-            var schema;
-            if (format === 'application/json' && bodyTypeKey === 'schema') { // support YAML schema and unpack an HTML description from the JSON schema
-              schema = parseJsonSchema(bodyTypeValue);
-              method.bodyDescription = schema.description && converter.makeHtml(schema.description); // markdown for description
-              delete schema.description; // too much to see this twice
-              bodyTypeValue = JSON.stringify(schema);
-            }
-            formatValue[bodyTypeKey] = beautify(format, bodyTypeValue);
-          });
-        });
+        _.forOwn(method.body || {}, convertBodyFn(data, converter));
 
         _.forOwn(method.responses || {}, function(response) {
           if (response) {
             response.description = response.description && converter.makeHtml(response.description);
-            _.forOwn(response.body || {}, function(formatValue, format) {
-              _.forOwn(formatValue || {}, function(bodyTypeValue, bodyTypeKey) {
-                var schema;
-                if (format === 'application/json' && bodyTypeKey === 'schema') { // support YAML schema
-                  schema = parseJsonSchema(bodyTypeValue);
-                  bodyTypeValue = JSON.stringify(schema);
-                }
-                formatValue[bodyTypeKey] = beautify(format, bodyTypeValue);
-              });
-            });
+            _.forOwn(response.body || {}, convertBodyFn(data, converter));
           }
         });
       });
     });
+
+    // all types have been pulled inline
+    delete data.types;
+
     return data;
   }
 
@@ -155,6 +205,8 @@ module.exports = function(grunt) {
 
         // pre-process the data before we save it so there is less to do when we want to render it
         try {
+          // TODO: error on unsupported features like: default mediaType
+          data = omitUndesired(data);
           data.resources = unnest(data.resources, [], '');
           data = formatForDisplay(data);
         }

@@ -37,6 +37,7 @@
   ],
   "dependencies": {
     "js-yaml": "^3.2.3",
+    "omit-deep": "^0.3.0",
     "pretty-data": "^0.40.0",
     "raml-1-parser": "^1.1.28",
     "showdown": "^1.7.1"

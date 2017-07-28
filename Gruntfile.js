@@ -70,6 +70,20 @@ module.exports = function(grunt) {
             ext: '.json'   // Dest filepaths will have this extension.
           }
         ]
+      },
+      version_1_0_options: {
+        options: {
+          prettyPrint: 2
+        },
+        files: [
+          {
+            expand: true,     // Enable dynamic expansion.
+            cwd: 'test/fixtures',      // Src matches are relative to this path.
+            src: ['version_1_0.raml'], // Actual pattern(s) to match.
+            dest: 'tmp/',   // Destination path prefix.
+            ext: '.json'   // Dest filepaths will have this extension.
+          }
+        ]
       }
     },
 

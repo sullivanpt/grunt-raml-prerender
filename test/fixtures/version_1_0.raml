@@ -1,0 +1,116 @@
+#%RAML 1.0
+# simple example raml using RAML 1.0
+
+title: simple example RAML API
+baseUri: https://{server.com}/api
+version: 1.2
+
+types:
+  SampleBody: |
+    {
+      "$schema": "http://json-schema.org/draft-03/schema",
+      "id": "simple",
+      "properties": {
+          "input": {
+              "required": true,
+              "type": "string"
+          }
+      },
+      "required": false,
+      "type": "object"
+    }
+  Person:
+    type: object
+    properties:
+      name: string
+  Employee:
+    type: object
+    properties:
+      employeeNr:
+        type: integer
+        description: The __employee ID__ number
+  Teacher:
+    type: [ Person, Employee ]
+
+/resource/{id}:
+  displayName: a resource can have a display name
+  description: |
+    we like bold descriptions
+    --------------------
+    a resource can have a __description__ too?
+  post:
+    description: |
+      attention
+      =========
+
+      we can post to this API too
+    queryParameters:
+        author:
+          displayName: Author
+          type: string
+          description: An author's full name
+          examples:
+            full-name: Mary Roach
+            pen-name:
+              value: Reclusive Writer
+              description: A __big__ deal
+          required: false
+        publicationYear:
+          displayName: Pub Year
+          type: number
+          description: The year released for the first time in the US
+          example: 1984
+          required: false
+    body:
+      application/json:
+        type: |
+          {
+            "$schema": "http://json-schema.org/draft-03/schema",
+            "description": "a long description <b>here we go bold</b> and there",
+            "properties": {
+                "input": {
+                    "required": true,
+                    "type": "string"
+                }
+            },
+            "required": false,
+            "type": "object"
+          }
+        example: |
+            {
+              "input": "things"
+            }
+    responses:
+      200:
+        description: |
+          A long description goes here.
+        body:
+          application/json:
+            type: Employee
+            examples:
+              different-input:
+                description: This __is__ invalid input
+                value: |
+                  {
+                    "employeeNr":
+                      4567
+                  }
+              valid-input: |
+                {
+                  "employeeNr": 8910
+                }
+      201:
+        description: A new object created description here
+        body:
+          application/json:
+            type: object
+            properties:
+              employee:
+                type: object
+                properties:
+                  employeeNr:
+                    type: integer
+                    description: The container for the __employee ID__ number
+                description: The __employee ID__ number
+            example: |
+              { "employee": { "employeeNr": 1234 }}

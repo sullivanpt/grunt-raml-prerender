@@ -54,5 +54,14 @@ exports.ramlprerender = {
     test.equal(actual, expected, 'should describe what the default behavior is.');
 
     test.done();
+  },
+  version_1_0_options: function (test) {
+    test.expect(1);
+
+    var actual = grunt.file.read('tmp/version_1_0.json');
+    var expected = grunt.util.normalizelf(grunt.file.read('test/expected/version_1_0.json'));
+    test.equal(actual, expected, 'should describe what the default behavior is.');
+
+    test.done();
   }
 };

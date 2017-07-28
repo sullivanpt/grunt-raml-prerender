@@ -8,7 +8,8 @@
       "displayName": "server.com",
       "type": "string",
       "required": true,
-      "repeat": false
+      "repeat": false,
+      "uri": true
     }
   },
   "protocols": [
@@ -27,7 +28,7 @@
                   "name": "application/json",
                   "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema\",\n  \"id\": \"simple\",\n  \"properties\": {\n    \"input\": {\n      \"required\": false,\n      \"type\": \"string\"\n    }\n  },\n  \"required\": false,\n  \"type\": \"object\"\n}",
                   "example": "{\n  \"input\": \"stuff\"\n}",
-                  "schemaContent": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema\",\n  \"id\": \"simple\",\n  \"properties\": {\n    \"input\": {\n      \"required\": false,\n      \"type\": \"string\"\n    }\n  },\n  \"required\": false,\n  \"type\": \"object\"\n}"
+                  "schemaContent": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema\",\n  \"id\": \"simple\",\n  \"properties\": {\n      \"input\": {\n          \"required\": false,\n          \"type\": \"string\"\n      }\n  },\n  \"required\": false,\n  \"type\": \"object\"\n}\n"
                 }
               },
               "description": "<p>A long description goes here.</p>"
@@ -38,15 +39,15 @@
               "name": "application/json",
               "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema\",\n  \"properties\": {\n    \"input\": {\n      \"required\": false,\n      \"type\": \"string\"\n    }\n  },\n  \"required\": false,\n  \"type\": \"object\"\n}",
               "example": "{\n  \"input\": \"stuff\"\n}",
-              "schemaContent": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema\",\n  \"description\": \"a long description <b>here we go bold</b> and there\",\n  \"properties\": {\n    \"input\": {\n      \"required\": false,\n      \"type\": \"string\"\n    }\n  },\n  \"required\": false,\n  \"type\": \"object\"\n}"
+              "schemaContent": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema\",\n  \"description\": \"a long description <b>here we go bold</b> and there\",\n  \"properties\": {\n      \"input\": {\n          \"required\": false,\n          \"type\": \"string\"\n      }\n  },\n  \"required\": false,\n  \"type\": \"object\"\n}\n",
+              "description": "<p>a long description <b>here we go bold</b> and there</p>"
             }
           },
           "protocols": [
             "HTTPS"
           ],
           "description": "<h1 id=\"attention\">attention</h1>\n<p>we can post to this API too</p>",
-          "method": "post",
-          "bodyDescription": "<p>a long description <b>here we go bold</b> and there</p>"
+          "method": "post"
         }
       ],
       "displayName": "a resource can have a display name",

@@ -1,0 +1,157 @@
+{
+  "title": "simple example RAML API",
+  "version": "1.2",
+  "baseUri": "https://{server.com}/api",
+  "baseUriParameters": {
+    "server.com": {
+      "name": "server.com",
+      "displayName": "server.com",
+      "typePropertyKind": "TYPE_EXPRESSION",
+      "type": "string",
+      "required": true,
+      "uri": true
+    }
+  },
+  "protocols": [
+    "HTTPS"
+  ],
+  "resources": [
+    {
+      "methods": [
+        {
+          "queryParameters": {
+            "author": {
+              "name": "author",
+              "displayName": "Author",
+              "typePropertyKind": "TYPE_EXPRESSION",
+              "type": "string",
+              "examples": [
+                {
+                  "value": "Mary Roach",
+                  "strict": true,
+                  "name": "full-name"
+                },
+                {
+                  "value": "Reclusive Writer",
+                  "strict": true,
+                  "name": "pen-name",
+                  "description": "<p>A <strong>big</strong> deal</p>"
+                }
+              ],
+              "required": false,
+              "description": "<p>An author's full name</p>"
+            },
+            "publicationYear": {
+              "name": "publicationYear",
+              "displayName": "Pub Year",
+              "typePropertyKind": "TYPE_EXPRESSION",
+              "type": "number",
+              "example": 1984,
+              "required": false,
+              "description": "<p>The year released for the first time in the US</p>"
+            }
+          },
+          "responses": {
+            "200": {
+              "code": "200",
+              "body": {
+                "application/json": {
+                  "name": "application/json",
+                  "displayName": "application/json",
+                  "typePropertyKind": "TYPE_EXPRESSION",
+                  "type": "Employee",
+                  "examples": [
+                    {
+                      "value": "{\n  \"employeeNr\": 4567\n}",
+                      "strict": true,
+                      "name": "different-input",
+                      "description": "<p>This <strong>is</strong> invalid input</p>"
+                    },
+                    {
+                      "value": "{\n  \"employeeNr\": 8910\n}",
+                      "strict": true,
+                      "name": "valid-input"
+                    }
+                  ],
+                  "properties": {
+                    "employeeNr": {
+                      "name": "employeeNr",
+                      "displayName": "employeeNr",
+                      "typePropertyKind": "TYPE_EXPRESSION",
+                      "type": "integer",
+                      "required": true,
+                      "description": "<p>The <strong>employee ID</strong> number</p>"
+                    }
+                  }
+                }
+              },
+              "description": "<p>A long description goes here.</p>"
+            },
+            "201": {
+              "code": "201",
+              "body": {
+                "application/json": {
+                  "name": "application/json",
+                  "displayName": "application/json",
+                  "typePropertyKind": "TYPE_EXPRESSION",
+                  "type": "object",
+                  "example": "{\n  \"employee\": {\n    \"employeeNr\": 1234\n  }\n}",
+                  "properties": {
+                    "employee": {
+                      "name": "employee",
+                      "displayName": "employee",
+                      "typePropertyKind": "TYPE_EXPRESSION",
+                      "type": "object",
+                      "required": true,
+                      "description": "<p>The <strong>employee ID</strong> number</p>",
+                      "properties": {
+                        "employeeNr": {
+                          "name": "employeeNr",
+                          "displayName": "employeeNr",
+                          "typePropertyKind": "TYPE_EXPRESSION",
+                          "type": "integer",
+                          "required": true,
+                          "description": "<p>The container for the <strong>employee ID</strong> number</p>"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "description": "<p>A new object created description here</p>"
+            }
+          },
+          "body": {
+            "application/json": {
+              "name": "application/json",
+              "displayName": "application/json",
+              "typePropertyKind": "JSON",
+              "example": "{\n  \"input\": \"things\"\n}",
+              "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema\",\n  \"properties\": {\n    \"input\": {\n      \"required\": true,\n      \"type\": \"string\"\n    }\n  },\n  \"required\": false,\n  \"type\": \"object\"\n}",
+              "description": "<p>a long description <b>here we go bold</b> and there</p>"
+            }
+          },
+          "protocols": [
+            "HTTPS"
+          ],
+          "description": "<h1 id=\"attention\">attention</h1>\n<p>we can post to this API too</p>",
+          "method": "post"
+        }
+      ],
+      "description": "<h2 id=\"welikebolddescriptions\">we like bold descriptions</h2>\n<p>a resource can have a <strong>description</strong> too?</p>",
+      "uriParameters": {
+        "id": {
+          "name": "id",
+          "displayName": "id",
+          "typePropertyKind": "TYPE_EXPRESSION",
+          "type": "string",
+          "required": true,
+          "uri": true
+        }
+      },
+      "relativeUri": "/resource/{id}",
+      "displayName": "a resource can have a display name",
+      "absoluteUri": "https://{server.com}/api/resource/{id}"
+    }
+  ]
+}

@@ -8,7 +8,8 @@
       "displayName": "server.com",
       "type": "string",
       "required": true,
-      "repeat": false
+      "repeat": false,
+      "uri": true
     }
   },
   "protocols": [
@@ -25,9 +26,10 @@
               "body": {
                 "application/json": {
                   "name": "application/json",
-                  "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema,\",\n  \"description\": \"a long description <b>here we go bold</b> and there,\",\n  \"properties\": {\n    \"input\": {\n      \"required\": \"false,\",\n      \"type\": \"string\"\n    }\n  },\n  \"required\": \"false,\",\n  \"type\": \"object\"\n}",
+                  "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema,\",\n  \"properties\": {\n    \"input\": {\n      \"required\": \"false,\",\n      \"type\": \"string\"\n    }\n  },\n  \"required\": \"false,\",\n  \"type\": \"object\"\n}",
                   "example": "{\n  \"input\": \"stuff\"\n}",
-                  "schemaContent": "$schema: http://json-schema.org/draft-03/schema,\ndescription: a long description <b>here we go bold</b> and there,\nproperties:\n  input:\n    required: false,\n    type: string\nrequired: false,\ntype: object\n"
+                  "schemaContent": "$schema: http://json-schema.org/draft-03/schema,\ndescription: a long description <b>here we go bold</b> and there,\nproperties:\n  input:\n    required: false,\n    type: string\nrequired: false,\ntype: object\n",
+                  "description": "<p>a long description <b>here we go bold</b> and there,</p>"
                 }
               },
               "description": "<p>A long description goes here.</p>"
@@ -38,15 +40,15 @@
               "name": "application/json",
               "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-03/schema,\",\n  \"properties\": {\n    \"input\": {\n      \"required\": \"false,\",\n      \"type\": \"string\"\n    }\n  },\n  \"required\": \"false,\",\n  \"type\": \"object\"\n}",
               "example": "{\n  \"input\": \"stuff\"\n}",
-              "schemaContent": "$schema: http://json-schema.org/draft-03/schema,\ndescription: |\n  bold header\n  ===========\n  a longer description <b>here we go bold</b> and there,\nproperties:\n  input:\n    required: false,\n    type: string\nrequired: false,\ntype: object\n"
+              "schemaContent": "$schema: http://json-schema.org/draft-03/schema,\ndescription: |\n  bold header\n  ===========\n  a longer description <b>here we go bold</b> and there,\nproperties:\n  input:\n    required: false,\n    type: string\nrequired: false,\ntype: object\n",
+              "description": "<h1 id=\"boldheader\">bold header</h1>\n<p>a longer description <b>here we go bold</b> and there,</p>"
             }
           },
           "protocols": [
             "HTTPS"
           ],
           "description": "<h1 id=\"attention\">attention</h1>\n<p>we can post to this API too</p>",
-          "method": "post",
-          "bodyDescription": "<h1 id=\"boldheader\">bold header</h1>\n<p>a longer description <b>here we go bold</b> and there,</p>"
+          "method": "post"
         }
       ],
       "displayName": "a resource can have a display name",
