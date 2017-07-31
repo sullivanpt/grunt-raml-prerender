@@ -10,7 +10,7 @@
 
 module.exports = function(grunt) {
   var raml = require("raml-1-parser"); // old 0.8 version was var raml = require('raml-parser');
-  var _ = grunt.util._;
+  var _ = require('lodash');
   var showdown = require('showdown');
   var pd = require('pretty-data').pd; // npm equivalent of vkiryukhin/vkBeautify
   var yaml = require('js-yaml');
