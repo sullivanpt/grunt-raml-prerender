@@ -60,14 +60,14 @@ module.exports = function(grunt) {
       // expand global types into each point of usage
       _.defaults(type, _.cloneDeep(data.types[type.type[0]])); // only support single inheritence
     }
-    // TODO: consider supporting typePropertyKind 'INPLACE' (JSON in global type)
+    // TODO: consider supporting typePropertyKind 'INPLACE' (JSON in global type, object properties in type)
     if (type.properties) {
       convertProperties(type.properties, false, data, converter);
     }
     if (_.isArray(type.type)) {
       type.type = type.type.join(', '); // only support single inheritence, but show more types if present
     }
-    if (['JSON', 'XML'].includes(type.typePropertyKind) && !type.schema) {
+    if (['JSON', 'XML'].indexOf(type.typePropertyKind) !== -1 && !type.schema) {
       type.schema = type.type; // convert inline JSON and XML to RAML08 format
       delete type.type;
     }
