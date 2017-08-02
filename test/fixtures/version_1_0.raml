@@ -114,3 +114,17 @@ types:
                 description: The __employee ID__ number
             example: |
               { "employee": { "employeeNr": 1234 }}
+      202:
+        description: |
+          A list of objects.
+        body:
+          application/json:
+            type: Employee[]
+            examples:
+              different-input:
+                description: This __is__ invalid input
+                value: |
+                  [{
+                    "employeeNr":
+                      4567
+                  }]

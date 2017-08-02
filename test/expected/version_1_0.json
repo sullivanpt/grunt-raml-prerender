@@ -119,6 +119,42 @@
                 }
               },
               "description": "<p>A new object created description here</p>"
+            },
+            "202": {
+              "code": "202",
+              "body": {
+                "application/json": {
+                  "name": "application/json",
+                  "displayName": "application/json",
+                  "typePropertyKind": "TYPE_EXPRESSION",
+                  "type": "array",
+                  "examples": [
+                    {
+                      "value": "[\n  {\n    \"employeeNr\": 4567\n  }\n]",
+                      "strict": true,
+                      "name": "different-input",
+                      "description": "<p>This <strong>is</strong> invalid input</p>"
+                    }
+                  ],
+                  "items": {
+                    "name": "Employee",
+                    "displayName": "Employee",
+                    "typePropertyKind": "TYPE_EXPRESSION",
+                    "type": "object",
+                    "properties": {
+                      "employeeNr": {
+                        "name": "employeeNr",
+                        "displayName": "employeeNr",
+                        "typePropertyKind": "TYPE_EXPRESSION",
+                        "type": "integer",
+                        "required": true,
+                        "description": "<p>The <strong>employee ID</strong> number</p>"
+                      }
+                    }
+                  }
+                }
+              },
+              "description": "<p>A list of objects.</p>"
             }
           },
           "body": {

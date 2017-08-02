@@ -67,6 +67,20 @@ module.exports = function(grunt) {
     if (_.isArray(type.type)) {
       type.type = type.type.join(', '); // only support single inheritence, but show more types if present
     }
+    if (type.items) {
+      // type array will have an items field
+      if (_.isArray(type.items)) {
+        // if items is a type name or array of type names, normalize as a string
+        type.items = type.items.join(', '); // only support single inheritence, but show more types if present
+      }
+      if (_.isString(type.items)) {
+        // expand global types into each point of usage, converting items to in place type
+        type.items = _.cloneDeep(data.types[type.items]); // only support single inheritence
+      }
+      if (_.isObject(type.items)) {
+        convertType(type.items, format, data, converter);
+      }
+    }
     if (['JSON', 'XML'].indexOf(type.typePropertyKind) !== -1 && !type.schema) {
       type.schema = type.type; // convert inline JSON and XML to RAML08 format
       delete type.type;
