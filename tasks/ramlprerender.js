@@ -52,13 +52,35 @@ module.exports = function(grunt) {
     }
   }
 
+  // helper to inherit properties from base classes. type is mutated. assumes base is deeply cloned
+  function inheritProperties (type, base, data) {
+    if (!base) {
+      return;
+    }
+    if (base.properties) {
+      if (!type.properties) {
+        type.properties = base.properties;
+      } else {
+        _.defaults(type.properties, base.properties); // inherit top level properties from base class, allow override
+      }
+    }
+    inheritProperties(type, _.cloneDeep(data.types[base.type[0]]), data); // only support single inheritence
+  }
+
   // helper to convert types
   // if format is not null it is used to beautify examples
   function convertType (type, format, data, converter) {
-    var schema;
+    var base, schema;
+    if (['JSON', 'XML'].indexOf(type.typePropertyKind) !== -1 && !type.schema) {
+      type.schema = type.type; // convert inline JSON and XML to RAML08 format
+      delete type.type;
+    }
     if (type.typePropertyKind === 'TYPE_EXPRESSION') {
       // expand global types into each point of usage
-      _.defaults(type, _.cloneDeep(data.types[type.type[0]])); // only support single inheritence
+      base = _.cloneDeep(data.types[type.type[0]]); // only support single inheritence
+      inheritProperties(type, base, data);
+      _.defaults(type, base);
+      base = null;
     }
     // TODO: consider supporting typePropertyKind 'INPLACE' (JSON in global type, object properties in type)
     if (type.properties) {
@@ -76,14 +98,11 @@ module.exports = function(grunt) {
       if (_.isString(type.items)) {
         // expand global types into each point of usage, converting items to in place type
         type.items = _.cloneDeep(data.types[type.items]); // only support single inheritence
+        inheritProperties(type.items, type.items, data);
       }
       if (_.isObject(type.items)) {
         convertType(type.items, format, data, converter);
       }
-    }
-    if (['JSON', 'XML'].indexOf(type.typePropertyKind) !== -1 && !type.schema) {
-      type.schema = type.type; // convert inline JSON and XML to RAML08 format
-      delete type.type;
     }
     if (type.description) {
       type.description = converter.makeHtml(type.description);

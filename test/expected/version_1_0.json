@@ -155,6 +155,100 @@
                 }
               },
               "description": "<p>A list of objects.</p>"
+            },
+            "203": {
+              "code": "203",
+              "body": {
+                "application/json": {
+                  "name": "application/json",
+                  "displayName": "application/json",
+                  "typePropertyKind": "TYPE_EXPRESSION",
+                  "type": "Friend",
+                  "examples": [
+                    {
+                      "value": "{\n  \"name\": \"fred\",\n  \"nickName\": \"freddie\",\n  \"age\": 4567\n}",
+                      "strict": true,
+                      "name": "different-input",
+                      "description": "<p>This <strong>is</strong> invalid input</p>"
+                    }
+                  ],
+                  "properties": {
+                    "age": {
+                      "name": "age",
+                      "displayName": "age",
+                      "typePropertyKind": "TYPE_EXPRESSION",
+                      "type": "number",
+                      "required": true,
+                      "description": "<p>derived description</p>"
+                    },
+                    "nickName": {
+                      "name": "nickName",
+                      "displayName": "nickName",
+                      "typePropertyKind": "TYPE_EXPRESSION",
+                      "type": "string",
+                      "required": true
+                    },
+                    "name": {
+                      "name": "name",
+                      "displayName": "name",
+                      "typePropertyKind": "TYPE_EXPRESSION",
+                      "type": "string",
+                      "required": true
+                    }
+                  }
+                }
+              },
+              "description": "<p>An inherited object</p>"
+            },
+            "204": {
+              "code": "204",
+              "body": {
+                "application/json": {
+                  "name": "application/json",
+                  "displayName": "application/json",
+                  "typePropertyKind": "TYPE_EXPRESSION",
+                  "type": "array",
+                  "examples": [
+                    {
+                      "value": "[\n  {\n    \"name\": \"fred\",\n    \"nickName\": \"freddie\",\n    \"age\": 4567\n  }\n]",
+                      "strict": true,
+                      "name": "different-input",
+                      "description": "<p>This <strong>is</strong> invalid input</p>"
+                    }
+                  ],
+                  "items": {
+                    "name": "Friend",
+                    "displayName": "Friend",
+                    "typePropertyKind": "TYPE_EXPRESSION",
+                    "type": "Person",
+                    "properties": {
+                      "age": {
+                        "name": "age",
+                        "displayName": "age",
+                        "typePropertyKind": "TYPE_EXPRESSION",
+                        "type": "number",
+                        "required": true,
+                        "description": "<p>derived description</p>"
+                      },
+                      "nickName": {
+                        "name": "nickName",
+                        "displayName": "nickName",
+                        "typePropertyKind": "TYPE_EXPRESSION",
+                        "type": "string",
+                        "required": true
+                      },
+                      "name": {
+                        "name": "name",
+                        "displayName": "name",
+                        "typePropertyKind": "TYPE_EXPRESSION",
+                        "type": "string",
+                        "required": true
+                      }
+                    }
+                  }
+                }
+              },
+              "description": "<p>An inherited array object</p>"
             }
           },
           "body": {

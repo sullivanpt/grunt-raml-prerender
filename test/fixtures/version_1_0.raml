@@ -23,6 +23,16 @@ types:
     type: object
     properties:
       name: string
+      age:
+        description: base description
+        type: number
+  Friend:
+    type: Person
+    properties:
+      age:
+        description: derived description
+        type: number
+      nickName: string
   Employee:
     type: object
     properties:
@@ -126,5 +136,37 @@ types:
                 value: |
                   [{
                     "employeeNr":
+                      4567
+                  }]
+      203:
+        description: |
+          An inherited object
+        body:
+          application/json:
+            type: Friend
+            examples:
+              different-input:
+                description: This __is__ invalid input
+                value: |
+                  {
+                    "name": "fred",
+                    "nickName": "freddie",
+                    "age":
+                      4567
+                  }
+      204:
+        description: |
+          An inherited array object
+        body:
+          application/json:
+            type: Friend[]
+            examples:
+              different-input:
+                description: This __is__ invalid input
+                value: |
+                  [{
+                    "name": "fred",
+                    "nickName": "freddie",
+                    "age":
                       4567
                   }]
