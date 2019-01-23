@@ -28,23 +28,14 @@ module.exports = function(grunt) {
 
   // helper to adding trait paged into resources queryParameters.
   function updateResources (data) {
-    var traitsPaged;
-    if (data.traits) {
-      _.forEach(data.traits, function(traits) {
-        if (_.has(traits.paged, "queryParameters")) {
-          traitsPaged = traits.paged.queryParameters;
-        }
-      });
-    }
-    if (data.resources) {
-      _.forEach(data.resources, function(resources) {
-        if (resources.methods) {
-          _.forEach(resources.methods, function(methods) {
-            if (_.has(methods, "queryParameters") && traitsPaged) {
-              methods.queryParameters = _.extend(methods.queryParameters || {}, traitsPaged);
-            }
-          });
-        }
+    var traitsPaged = _.get(_.find(data.traits || [], function (trt) { return trt.paged; }), 'paged.queryParameters');
+    if (traitsPaged) {
+      _.forEach(data.resources || [], function (resource) {
+        _.forEach(resource.methods || [], function (method) {
+          if ((method.is || []).includes('paged')) {
+            method.queryParameters = _.extend(method.queryParameters || {}, traitsPaged);
+          }
+        });
       });
     }
     return data;
@@ -263,9 +254,9 @@ module.exports = function(grunt) {
         // pre-process the data before we save it so there is less to do when we want to render it
         try {
           // TODO: error on unsupported features like: default mediaType
-          data = updateResources(data);
           data = omitUndesired(data);
           data.resources = unnest(data.resources, [], '');
+          data = updateResources(data);
           data = formatForDisplay(data);
         }
         catch (err) {
